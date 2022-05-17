@@ -6,11 +6,11 @@ function Timer(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.minutesRow}>
-        <Counter style={styles.minutes}></Counter>
+        <Counter style={styles.minutes} count={props.timeText.minutes} />
         <Text style={styles.separator}>:</Text>
-        <Counter style={styles.seconds}></Counter>
+        <Counter style={styles.seconds} count={props.timeText.seconds} />
         <Text style={styles.text}>:</Text>
-        <Counter style={styles.milliseconds}></Counter>
+        <Counter style={styles.hundredthSeconds} count={props.timeText.hundredthSeconds} />
       </View>
     </View>
   );
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   separator: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     color: "rgba(255,255,255,1)",
     fontSize: 86
   },
@@ -36,11 +36,11 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   text: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     color: "rgba(255,255,255,1)",
     fontSize: 86
   },
-  milliseconds: {
+  hundredthSeconds: {
     height: 103,
     width: 97,
     marginTop: 8
