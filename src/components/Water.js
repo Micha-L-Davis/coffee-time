@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import MedLabel from "./MedLabel";
 import SmallBubble from "./SmallBubble";
-import MaterialUnderlineTextbox from "./MaterialUnderlineTextbox";
+import UnderlineTextbox from "./UnderlineTextbox";
 
 function Water(props) {
   return (
@@ -11,11 +11,11 @@ function Water(props) {
         <MedLabel label="Water (g)" style={styles.medLabel5}></MedLabel>
         <View style={styles.smallBubble3Stack}>
           <SmallBubble style={styles.smallBubble3}></SmallBubble>
-          <MaterialUnderlineTextbox
+          <UnderlineTextbox
             inputStyle="Placeholder"
-            inputStyle="702"
+            inputText="702"
             style={styles.waterTextBox}
-          ></MaterialUnderlineTextbox>
+          ></UnderlineTextbox>
         </View>
       </View>
     </View>
