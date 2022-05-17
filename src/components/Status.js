@@ -12,7 +12,7 @@ function Status(props) {
 const styles = StyleSheet.create({
   container: {},
   text: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     color: "rgba(255,255,255,1)",
     fontSize: 31
   }
