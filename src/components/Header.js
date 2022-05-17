@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   coffeeTime: {
-    fontFamily: "roboto-700",
+    // fontFamily: "roboto-700",
     color: "rgba(255,255,255,1)",
     fontSize: 24,
     marginTop: 10,
