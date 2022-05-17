@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import MedLabel from "./MedLabel";
 import SmallBubble from "./SmallBubble";
-import MaterialUnderlineTextbox from "./MaterialUnderlineTextbox";
+import MaterialUnderlineTextbox from "./UnderlineTextbox";
 
 function Grounds(props) {
   return (
@@ -16,7 +16,7 @@ function Grounds(props) {
           <SmallBubble style={styles.smallBubble2}></SmallBubble>
           <MaterialUnderlineTextbox
             inputStyle="Placeholder"
-            inputStyle="44"
+            inputText="44"
             style={styles.groundsTextBox}
           ></MaterialUnderlineTextbox>
         </View>
