@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import BgBox from "./BgBox";
 import Timer from "./Timer";
@@ -6,6 +6,7 @@ import Status from "./Status";
 import ButtonDark from "./ButtonDark";
 
 function BrewClock(props) {
+
   const initialState = {
     minutes: '04',
     seconds: '00',
@@ -18,14 +19,13 @@ function BrewClock(props) {
   function timeReducer(state, action) {
     switch (action.type) {
       case 'START_STOP':
-        let newState = !state.isRunning
-        if (newState === true) timerLoop();
-        return { ...state, isRunning: newState };
+        let toggle = !state.isRunning
+        return { ...state, isRunning: toggle };
       case 'DECREMENT':
         let hs = +state.hundredthSeconds - 1;
         let ss = +state.seconds;
         let mm = +state.minutes;
-        console.log(mm, ss, hs);
+        //console.log(mm, ss, hs);
         if (hs < 0 && (ss > 0 || mm > 0)) {
           hs = 99;
           ss--;
@@ -55,6 +55,8 @@ function BrewClock(props) {
         return state;
     }
   }
+
+  useEffect(() => { if (time.isRunning) timerLoop(); }, [time.hundredthSeconds])
 
   function resetTimer() {
     dispatch({ type: 'RESET', payload: null });
@@ -109,10 +111,13 @@ function BrewClock(props) {
   }
 
   function timerLoop() {
-    console.log('time state: ', time);
+    //console.log('time state: ', time);
+
     if (time.isRunning) {
       decrementTimer();
-      setTimeout(timerLoop, 100);
+      setTimeout(() => { }, 100);
+    } else {
+      clearTimeout();
     }
   }
 
