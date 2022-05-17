@@ -1,25 +1,137 @@
-import React, { Component } from "react";
+import React, { useReducer } from "react";
 import { StyleSheet, View } from "react-native";
 import BgBox from "./BgBox";
 import Timer from "./Timer";
 import Status from "./Status";
-import MaterialButtonDark from "./MaterialButtonDark";
+import ButtonDark from "./ButtonDark";
 
 function BrewClock(props) {
+  const initialState = {
+    minutes: '04',
+    seconds: '00',
+    hundredthSeconds: '00',
+    statusText: '',
+    isRunning: false,
+  }
+  const [time, dispatch] = useReducer(timeReducer, initialState);
+
+  function timeReducer(state, action) {
+    switch (action.type) {
+      case 'START_STOP':
+        let newState = !state.isRunning
+        if (newState === true) timerLoop();
+        return { ...state, isRunning: newState };
+      case 'DECREMENT':
+        let hs = +state.hundredthSeconds - 1;
+        let ss = +state.seconds;
+        let mm = +state.minutes;
+        console.log(mm, ss, hs);
+        if (hs < 0 && (ss > 0 || mm > 0)) {
+          hs = 99;
+          ss--;
+        }
+        if (ss < 0 && mm > 0) {
+          ss = 59;
+          mm--;
+        }
+        else if (ss < 0 && mm <= 0) {
+          ss = 0;
+        }
+
+        if (mm < 0) {
+          mm = 0;
+        }
+        return {
+          ...state,
+          minutes: mm.toString().padStart(2, '0'),
+          seconds: ss.toString().padStart(2, '0'),
+          hundredthSeconds: hs.toString().padStart(2, '0')
+        };
+      case 'RESET':
+        return initialState;
+      case 'STATUS_UPDATE':
+        return { ...state, statusText: action.payload };
+      default:
+        return state;
+    }
+  }
+
+  function resetTimer() {
+    dispatch({ type: 'RESET', payload: null });
+  }
+
+  function decrementTimer() {
+    dispatch({ type: 'DECREMENT', payload: null });
+    checkStatus();
+  }
+
+  function updateStatus(string) {
+    dispatch({ type: 'STATUS_UPDATE', payload: string });
+  }
+
+  function startStopTimer() {
+    dispatch({ type: 'START_STOP', payload: null })
+  }
+
+  function checkStatus() {
+    if (+time.minutes === 3 && +time.seconds <= 59 && +time.seconds > 45) {
+      updateStatus('Bloom to XXXg');
+    }
+    if (+time.minutes === 3 && +time.seconds <= 45 && +time.seconds > 30) {
+      updateStatus('Wait...');
+      // play wait audio
+    }
+    if (+time.minutes === 3 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
+      // play warning audio
+    }
+    if (+time.minutes === 3 && +time.seconds <= 29 && +time.seconds > 0) {
+      updateStatus('First pour to XXXg');
+    }
+    if (+time.minutes === 2 && +time.seconds <= 59 && +time.seconds > 30) {
+      updateStatus('Wait...');
+      // play wait audio
+    }
+    if (+time.minutes === 2 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
+      // play warn audio
+    }
+    if (+time.minutes === 2 && +time.seconds <= 30 && +time.seconds > 0) {
+      updateStatus('Second pour to XXXg');
+    }
+    if (+time.minutes <= 1 && +time.seconds <= 59) {
+      updateStatus('Wait...');
+      // play wait audio
+    }
+
+    if (+time.hundredthSeconds <= 0 && +time.seconds <= 0 && +time.minutes <= 0) {
+      isRunning = false;
+      // play complete audio
+    }
+  }
+
+  function timerLoop() {
+    console.log('time state: ', time);
+    if (time.isRunning) {
+      decrementTimer();
+      setTimeout(timerLoop, 100);
+    }
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.bgBox2Stack}>
         <BgBox style={styles.bgBox2}></BgBox>
-        <Timer style={styles.timer}></Timer>
-        <Status style={styles.status}></Status>
-        <MaterialButtonDark
-          caption="RESET"
+        <Timer style={styles.timer} timeText={{ minutes: time.minutes, seconds: time.seconds, hundredthSeconds: time.hundredthSeconds }} />
+        <Status style={styles.status} statusText={time.status} />
+        <ButtonDark
+          caption={!time.isRunning ? "START" : "STOP"}
           style={styles.materialButtonDark}
-        ></MaterialButtonDark>
-        <MaterialButtonDark
+          handlePress={startStopTimer}
+        />
+        <ButtonDark
           caption="RESET"
           style={styles.materialButtonDark2}
-        ></MaterialButtonDark>
+          handlePress={resetTimer}
+        />
       </View>
     </View>
   );
