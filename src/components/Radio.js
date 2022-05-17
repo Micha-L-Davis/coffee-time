@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-function CupertinoRadio(props) {
+function Radio(props) {
   return (
     <TouchableOpacity style={[styles.container, props.style]}>
       <Icon
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CupertinoRadio;
+export default Radio;
