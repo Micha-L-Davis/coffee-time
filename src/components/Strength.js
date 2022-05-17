@@ -1,29 +1,48 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import BgBox from "./BgBox";
 import SmallLabel from "./SmallLabel";
-import CupertinoRadio from "./CupertinoRadio";
+//import Radio from "./Radio";
 import MedLabel from "./MedLabel";
+import RadioGroup, { RadioButton } from 'react-native-radio-buttons-group'
+
+const strengthSelectorData = [{
+  id: '1:18',
+  label: '1:18',
+  value: '18'
+},
+{
+  id: '1:17',
+  label: '1:17',
+  value: '17'
+},
+{
+  id: '1:16',
+  label: '1:16',
+  value: '16'
+}]
 
 function Strength(props) {
+
+  const [strengthSelectors, setStrengthSelector] = useState(strengthSelectorData);
+
+  function handleSelectorPress(selectors) {
+    setStrengthSelector(selectors);
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.bgBoxStack}>
-        <BgBox style={styles.bgBox}></BgBox>
-        <SmallLabel
-          small="Grounds to Water Ratio"
-          style={styles.smallLabel}
-        ></SmallLabel>
-        <CupertinoRadio style={styles.weakRatioRadio}></CupertinoRadio>
-        <MedLabel label="1:18" style={styles.weakLabel}></MedLabel>
-        <CupertinoRadio style={styles.mediumRatioRadio}></CupertinoRadio>
-        <MedLabel
-          text="1:18"
-          label="1:17"
-          style={styles.mediumLabel}
-        ></MedLabel>
-        <CupertinoRadio style={styles.strongRatioRadio}></CupertinoRadio>
-        <MedLabel label="1:16" style={styles.strongLabel}></MedLabel>
+        <BgBox style={styles.bgBox} />
+        <SmallLabel text="Grounds to Water Ratio" style={styles.smallLabel} />
+        <RadioGroup radioButtons={strengthSelectors} onPress={handleSelectorPress} layout='row'>
+          <RadioButton style={styles.weakRatioRadio} />
+          <MedLabel label="1:18" style={styles.weakLabel} />
+          <RadioButton style={styles.mediumRatioRadio} />
+          <MedLabel label="1:17" style={styles.mediumLabel} />
+          <RadioButton style={styles.strongRatioRadio} />
+          <MedLabel label="1:16" style={styles.strongLabel} />
+        </RadioGroup>
       </View>
     </View>
   );
