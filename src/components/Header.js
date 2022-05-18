@@ -5,7 +5,7 @@ function Header(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.rect}>
-        <Text style={styles.coffeeTime}>Coffee Time</Text>
+        <Text style={styles.coffeeTime}>☕Coffee Time</Text>
       </View>
     </View>
   );
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,1)",
     fontSize: 24,
     marginTop: 10,
-    marginLeft: 35
+    marginLeft: 20
   }
 });
 
