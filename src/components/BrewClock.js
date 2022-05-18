@@ -56,7 +56,6 @@ function BrewClock(props) {
     }
   }
 
-  useEffect(() => { if (time.isRunning) timerLoop(); }, [time.hundredthSeconds])
 
   function resetTimer() {
     dispatch({ type: 'RESET', payload: null });
@@ -110,12 +109,14 @@ function BrewClock(props) {
     }
   }
 
+  useEffect(() => { if (time.isRunning) timerLoop(); }, [time.hundredthSeconds])
+  useEffect(() => { if (time.isRunning) decrementTimer(); }, [time.isRunning])
+
   function timerLoop() {
     //console.log('time state: ', time);
 
     if (time.isRunning) {
-      decrementTimer();
-      setTimeout(() => { }, 100);
+      setTimeout(decrementTimer, 100);
     } else {
       clearTimeout();
     }
