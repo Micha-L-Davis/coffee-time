@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     top: 15,
     left: 14,
     height: 22,
-    width: 185
+    width: 250
   },
   weakRatioRadio: {
     height: 40,
