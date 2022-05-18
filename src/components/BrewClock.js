@@ -1,123 +1,75 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import BgBox from "./BgBox";
 import Timer from "./Timer";
-import Status from "./Status";
-import ButtonDark from "./ButtonDark";
+import Countdown, { zeroPad } from "react-countdown";
+
 
 function BrewClock(props) {
-
-  const initialState = {
-    minutes: '04',
-    seconds: '00',
-    hundredthSeconds: '00',
-    statusText: '',
-    isRunning: false,
-  }
-  const [time, dispatch] = useReducer(timeReducer, initialState);
-
-  function timeReducer(state, action) {
-    switch (action.type) {
-      case 'START_STOP':
-        let toggle = !state.isRunning
-        return { ...state, isRunning: toggle };
-      case 'DECREMENT':
-        let hs = +state.hundredthSeconds - 1;
-        let ss = +state.seconds;
-        let mm = +state.minutes;
-        //console.log(mm, ss, hs);
-        if (hs < 0 && (ss > 0 || mm > 0)) {
-          hs = 99;
-          ss--;
-        }
-        if (ss < 0 && mm > 0) {
-          ss = 59;
-          mm--;
-        }
-        else if (ss < 0 && mm <= 0) {
-          ss = 0;
-        }
-
-        if (mm < 0) {
-          mm = 0;
-        }
-        return {
-          ...state,
-          minutes: mm.toString().padStart(2, '0'),
-          seconds: ss.toString().padStart(2, '0'),
-          hundredthSeconds: hs.toString().padStart(2, '0')
-        };
-      case 'RESET':
-        return initialState;
-      case 'STATUS_UPDATE':
-        return { ...state, statusText: action.payload };
-      default:
-        return state;
+  const countDownRenderer = ({ minutes, seconds, milliseconds, completed, api }) => {
+    if (!api.isStarted) return <Timer style={styles.timer} timeText={{ minutes: '04', seconds: '00', milliseconds: '00' }} />
+    if (+minutes === 3 && +seconds <= 59 && +seconds > 45) {
+      return <Timer
+        style={styles.timer}
+        timeText={{ minutes: zeroPad(minutes), seconds: zeroPad(seconds), milliseconds: zeroPad(milliseconds) }}
+        status='Bloom to XXXg'
+        api={api}
+      />
     }
-  }
-
-  useEffect(() => { if (time.isRunning) timerLoop(); }, [time.hundredthSeconds])
-
-  function resetTimer() {
-    dispatch({ type: 'RESET', payload: null });
-  }
-
-  function decrementTimer() {
-    dispatch({ type: 'DECREMENT', payload: null });
-    checkStatus();
-  }
-
-  function updateStatus(string) {
-    dispatch({ type: 'STATUS_UPDATE', payload: string });
-  }
-
-  function startStopTimer() {
-    dispatch({ type: 'START_STOP', payload: null })
-  }
-
-  function checkStatus() {
-    if (+time.minutes === 3 && +time.seconds <= 59 && +time.seconds > 45) {
-      updateStatus('Bloom to XXXg');
-    }
-    if (+time.minutes === 3 && +time.seconds <= 45 && +time.seconds > 30) {
-      updateStatus('Wait...');
+    if (+minutes === 3 && +seconds <= 45 && +seconds > 30) {
       // play wait audio
+      return <Timer
+        style={styles.timer}
+        timeText={{ minutes: zeroPad(minutes), seconds: zeroPad(seconds), milliseconds: zeroPad(milliseconds) }}
+        status='Wait...'
+        api={api}
+      />
     }
-    if (+time.minutes === 3 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
+    if (+minutes === 3 && +seconds === 34 && +milliseconds <= 50) {
       // play warning audio
     }
-    if (+time.minutes === 3 && +time.seconds <= 29 && +time.seconds > 0) {
-      updateStatus('First pour to XXXg');
+    if (+minutes === 3 && +seconds <= 29 && +seconds > 0) {
+      return <Timer
+        style={styles.timer}
+        timeText={{ minutes: zeroPad(minutes), seconds: zeroPad(seconds), milliseconds: zeroPad(milliseconds) }}
+        status='First pour to XXXg'
+        api={api}
+      />
     }
-    if (+time.minutes === 2 && +time.seconds <= 59 && +time.seconds > 30) {
-      updateStatus('Wait...');
+    if (+minutes === 2 && +seconds <= 59 && +seconds > 30) {
       // play wait audio
+      return <Timer
+        style={styles.timer}
+        timeText={{ minutes: zeroPad(minutes), seconds: zeroPad(seconds), milliseconds: zeroPad(milliseconds) }}
+        status='Wait...'
+        api={api}
+      />
     }
-    if (+time.minutes === 2 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
+    if (+minutes === 2 && +seconds === 34 && +milliseconds <= 50) {
       // play warn audio
     }
-    if (+time.minutes === 2 && +time.seconds <= 30 && +time.seconds > 0) {
-      updateStatus('Second pour to XXXg');
+    if (+minutes === 2 && +seconds <= 30 && +seconds > 0) {
+      return <Timer
+        style={styles.timer}
+        timeText={{ minutes: zeroPad(minutes), seconds: zeroPad(seconds), milliseconds: zeroPad(milliseconds) }}
+        status='Second pour to XXXg'
+        api={api}
+      />
     }
-    if (+time.minutes <= 1 && +time.seconds <= 59) {
-      updateStatus('Wait...');
+    if (+minutes <= 1 && +seconds <= 59) {
       // play wait audio
+      return <Timer
+        style={styles.timer}
+        timeText={{ minutes: zeroPad(minutes), seconds: zeroPad(seconds), milliseconds: zeroPad(milliseconds) }}
+        status='Wait...'
+        api={api}
+      />
     }
 
-    if (+time.hundredthSeconds <= 0 && +time.seconds <= 0 && +time.minutes <= 0) {
-      isRunning = false;
-      // play complete audio
-    }
-  }
-
-  function timerLoop() {
-    //console.log('time state: ', time);
-
-    if (time.isRunning) {
-      decrementTimer();
-      setTimeout(() => { }, 100);
-    } else {
-      clearTimeout();
+    if (completed) {
+      //play completion sound
+      setIsRunning(false);
+      return <Timer style={styles.timer} timeText={{ minutes: '00', seconds: '00', milliseconds: '00' }} status='' api={api} />
     }
   }
 
@@ -125,22 +77,18 @@ function BrewClock(props) {
     <View style={[styles.container, props.style]}>
       <View style={styles.bgBox2Stack}>
         <BgBox style={styles.bgBox2}></BgBox>
-        <Timer style={styles.timer} timeText={{ minutes: time.minutes, seconds: time.seconds, hundredthSeconds: time.hundredthSeconds }} />
-        <Status style={styles.status} statusText={time.status} />
-        <ButtonDark
-          caption={!time.isRunning ? "START" : "STOP"}
-          style={styles.materialButtonDark}
-          handlePress={startStopTimer}
-        />
-        <ButtonDark
-          caption="RESET"
-          style={styles.materialButtonDark2}
-          handlePress={resetTimer}
+        <Countdown
+          date={Date.now() + 240000}
+          renderer={countDownRenderer}
+          intervalDelay={0}
+          precision={3}
+          autoStart={false}
         />
       </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {},
