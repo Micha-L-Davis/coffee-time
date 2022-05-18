@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import Header from "../components/Header";
 import Strength from "../components/Strength";
@@ -8,10 +8,10 @@ import BrewClock from "../components/BrewClock";
 function Main(props) {
   return (
     <View style={styles.container}>
-      <Header style={styles.header}></Header>
-      <Strength style={styles.strength}></Strength>
-      <Measures style={styles.measures}></Measures>
-      <BrewClock style={styles.brewClock}></BrewClock>
+      <Header style={styles.header} />
+      <Strength style={styles.strength} />
+      <Measures style={styles.measures} />
+      <BrewClock style={styles.brewClock} />
     </View>
   );
 }

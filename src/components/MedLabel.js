@@ -12,7 +12,7 @@ function MedLabel(props) {
 const styles = StyleSheet.create({
   container: {},
   label: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     color: "rgba(255,255,255,1)",
     fontSize: 25,
     width: 268,

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import MedLabel from "./MedLabel";
 import SmallBubble from "./SmallBubble";
-import MaterialUnderlineTextbox from "./MaterialUnderlineTextbox";
+import UnderlineTextbox from "./UnderlineTextbox";
 
 function Servings(props) {
   return (
@@ -14,11 +14,11 @@ function Servings(props) {
         ></MedLabel>
         <View style={styles.smallBubbleStack}>
           <SmallBubble style={styles.smallBubble}></SmallBubble>
-          <MaterialUnderlineTextbox
+          <UnderlineTextbox
             inputStyle="Placeholder"
-            inputStyle="2"
+            inputText="2"
             style={styles.servingsTextBox}
-          ></MaterialUnderlineTextbox>
+          ></UnderlineTextbox>
         </View>
       </View>
     </View>

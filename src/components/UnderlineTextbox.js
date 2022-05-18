@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 
-function MaterialUnderlineTextbox(props) {
+function UnderlineTextbox(props) {
   return (
     <View style={[styles.container, props.style]}>
       <TextInput
-        placeholder={props.inputStyle || "Placeholder"}
+        placeholder={props.inputText || "000"}
         maxLength={3}
         keyboardType="numeric"
         returnKeyType="next"
@@ -33,4 +33,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MaterialUnderlineTextbox;
+export default UnderlineTextbox;

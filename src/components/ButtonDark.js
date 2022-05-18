@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 
-function MaterialButtonDark(props) {
+function ButtonDark(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={props.handlePress}>
       <Text style={styles.caption}>{props.caption || "BUTTON"}</Text>
     </TouchableOpacity>
   );
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MaterialButtonDark;
+export default ButtonDark;

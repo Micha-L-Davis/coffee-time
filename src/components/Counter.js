@@ -4,7 +4,7 @@ import { StyleSheet, View, Text } from "react-native";
 function Counter(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.digits}>00</Text>
+      <Text style={styles.digits}>{props.count || '--'}</Text>
     </View>
   );
 }
@@ -12,7 +12,7 @@ function Counter(props) {
 const styles = StyleSheet.create({
   container: {},
   digits: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     color: "rgba(255,255,255,1)",
     fontSize: 86
   }
