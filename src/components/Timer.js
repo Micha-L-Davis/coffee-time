@@ -10,7 +10,7 @@ function Timer(props) {
         <Text style={styles.separator}>:</Text>
         <Counter style={styles.seconds} count={props.timeText.seconds} />
         <Text style={styles.text}>:</Text>
-        <Counter style={styles.hundredthSeconds} count={props.timeText.hundredthSeconds} />
+        <Counter style={styles.milliseconds} count={props.timeText.milliseconds} />
       </View>
     </View>
   );
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,1)",
     fontSize: 86
   },
-  hundredthSeconds: {
+  milliseconds: {
     height: 103,
     width: 97,
     marginTop: 8
