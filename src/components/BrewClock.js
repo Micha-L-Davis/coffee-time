@@ -36,10 +36,10 @@ function BrewClock(props) {
   }
 
   useEffect(() => {
-    return startAudio ?
-      () => startAudio.unloadAsync() :
+    return waitAudio ?
+      () => waitAudio.unloadAsync() :
       undefined,
-      [startAudio]
+      [waitAudio]
   });
 
   async function playWarnAudio() {
@@ -75,7 +75,7 @@ function BrewClock(props) {
   const initialState = {
     minutes: '04',
     seconds: '00',
-    hundredthSeconds: '00',
+    milliseconds: '00',
     statusText: '',
     isRunning: false,
   }
@@ -87,12 +87,12 @@ function BrewClock(props) {
         let toggle = !state.isRunning
         return { ...state, isRunning: toggle };
       case 'DECREMENT':
-        let hs = +state.hundredthSeconds - 1;
+        let ms = +state.milliseconds - 1;
         let ss = +state.seconds;
         let mm = +state.minutes;
         //console.log(mm, ss, hs);
-        if (hs < 0 && (ss > 0 || mm > 0)) {
-          hs = 99;
+        if (ms < 0 && (ss > 0 || mm > 0)) {
+          ms = 99;
           ss--;
         }
         if (ss < 0 && mm > 0) {
@@ -110,7 +110,7 @@ function BrewClock(props) {
           ...state,
           minutes: mm.toString().padStart(2, '0'),
           seconds: ss.toString().padStart(2, '0'),
-          hundredthSeconds: hs.toString().padStart(2, '0')
+          milliseconds: ms.toString().padStart(2, '0')
         };
       case 'RESET':
         return initialState;
@@ -132,6 +132,7 @@ function BrewClock(props) {
   }
 
   function updateStatus(string) {
+    console.log('Status is :', string)
     dispatch({ type: 'STATUS_UPDATE', payload: string });
   }
 
@@ -141,49 +142,49 @@ function BrewClock(props) {
   }
 
   function checkStatus() {
-    if (+time.minutes === 3 && +time.seconds <= 59 && +time.seconds > 45) {
+    if (+time.minutes === 3 && +time.seconds === 59 && +time.milliseconds === 0) {
       updateStatus('Bloom to XXXg');
     }
-    if (+time.minutes === 3 && +time.seconds <= 45 && +time.seconds > 30) {
+    if (+time.minutes === 3 && +time.seconds === 45 && +time.milliseconds === 0) {
       updateStatus('Wait...');
       playWaitAudio();
     }
-    if (+time.minutes === 3 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
+    if (+time.minutes === 3 && +time.seconds === 34 && +time.milliseconds === 0) {
       playWarnAudio()
     }
-    if (+time.minutes === 3 && +time.seconds <= 29 && +time.seconds > 0) {
+    if (+time.minutes === 3 && +time.seconds === 29 && +time.milliseconds === 0) {
       updateStatus('First pour to XXXg');
     }
-    if (+time.minutes === 2 && +time.seconds <= 59 && +time.seconds > 30) {
+    if (+time.minutes === 2 && +time.seconds === 59 && +time.milliseconds === 0) {
       updateStatus('Wait...');
       playWaitAudio();
     }
-    if (+time.minutes === 2 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
+    if (+time.minutes === 2 && +time.seconds === 34 && +time.milliseconds === 0) {
       playWarnAudio();
     }
-    if (+time.minutes === 2 && +time.seconds <= 30 && +time.seconds > 0) {
+    if (+time.minutes === 2 && +time.seconds === 30 && +time.milliseconds === 0) {
       updateStatus('Second pour to XXXg');
     }
-    if (+time.minutes <= 1 && +time.seconds <= 59) {
+    if (+time.minutes === 1 && +time.seconds === 59 && +time.milliseconds === 99) {
       updateStatus('Wait...');
       playWaitAudio();
     }
 
-    if (+time.hundredthSeconds <= 0 && +time.seconds <= 0 && +time.minutes <= 0) {
+    if (+time.milliseconds === 0 && +time.seconds === 0 && +time.minutes === 0) {
       isRunning = false;
       // play complete audio
       playCompletedAudio();
     }
   }
 
-  useEffect(() => { if (time.isRunning) timerLoop(); }, [time.hundredthSeconds])
+  useEffect(() => { if (time.isRunning) timerLoop(); }, [time.milliseconds])
   useEffect(() => { if (time.isRunning) decrementTimer(); }, [time.isRunning])
 
   function timerLoop() {
     //console.log('time state: ', time);
 
     if (time.isRunning) {
-      setTimeout(decrementTimer, 10);
+      setTimeout(decrementTimer, 7.95);
     } else {
       clearTimeout();
     }
@@ -193,8 +194,8 @@ function BrewClock(props) {
     <View style={[styles.container, props.style]}>
       <View style={styles.bgBox2Stack}>
         <BgBox style={styles.bgBox2}></BgBox>
-        <Timer style={styles.timer} timeText={{ minutes: time.minutes, seconds: time.seconds, hundredthSeconds: time.hundredthSeconds }} />
-        <Status style={styles.status} statusText={time.status} />
+        <Timer style={styles.timer} timeText={{ minutes: time.minutes, seconds: time.seconds, milliseconds: time.milliseconds }} />
+        <Status style={styles.status} statusText={time.statusText} />
         <ButtonDark
           caption={!time.isRunning ? "START" : "STOP"}
           style={styles.materialButtonDark}
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
     top: 127,
     left: 69,
     height: 38,
-    width: 223
+    width: 300
   },
   materialButtonDark: {
     height: 50,
