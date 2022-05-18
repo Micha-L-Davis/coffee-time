@@ -4,7 +4,7 @@ import { StyleSheet, View, Text } from "react-native";
 function Status(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.text}>Bloom to ~110g</Text>
+      <Text style={styles.text}>{props.statusText}</Text>
     </View>
   );
 }
