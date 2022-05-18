@@ -1,11 +1,76 @@
-import React, { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import BgBox from "./BgBox";
 import Timer from "./Timer";
 import Status from "./Status";
 import ButtonDark from "./ButtonDark";
+import { Audio } from 'expo-av';
 
 function BrewClock(props) {
+  const [waitAudio, setWaitAudio] = useState();
+  const [warnAudio, setWarnAudio] = useState();
+  const [completedAudio, setCompletedAudio] = useState();
+  const [startAudio, setStartAudio] = useState();
+
+  async function playStartAudio() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/audio/start.wav')
+    );
+    setStartAudio(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return startAudio ?
+      () => startAudio.unloadAsync() :
+      undefined,
+      [startAudio]
+  });
+
+  async function playWaitAudio() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/audio/wait.wav')
+    );
+    setWaitAudio(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return startAudio ?
+      () => startAudio.unloadAsync() :
+      undefined,
+      [startAudio]
+  });
+
+  async function playWarnAudio() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/audio/warn.wav')
+    );
+    setWarnAudio(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return warnAudio ?
+      () => warnAudio.unloadAsync() :
+      undefined,
+      [warnAudio]
+  });
+
+  async function playCompletedAudio() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/audio/completed.wav')
+    );
+    setCompletedAudio(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return completedAudio ?
+      () => completedAudio.unloadAsync() :
+      undefined,
+      [completedAudio]
+  });
 
   const initialState = {
     minutes: '04',
@@ -71,6 +136,7 @@ function BrewClock(props) {
   }
 
   function startStopTimer() {
+    playStartAudio();
     dispatch({ type: 'START_STOP', payload: null })
   }
 
@@ -80,32 +146,33 @@ function BrewClock(props) {
     }
     if (+time.minutes === 3 && +time.seconds <= 45 && +time.seconds > 30) {
       updateStatus('Wait...');
-      // play wait audio
+      playWaitAudio();
     }
     if (+time.minutes === 3 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
-      // play warning audio
+      playWarnAudio()
     }
     if (+time.minutes === 3 && +time.seconds <= 29 && +time.seconds > 0) {
       updateStatus('First pour to XXXg');
     }
     if (+time.minutes === 2 && +time.seconds <= 59 && +time.seconds > 30) {
       updateStatus('Wait...');
-      // play wait audio
+      playWaitAudio();
     }
     if (+time.minutes === 2 && +time.seconds === 34 && +time.hundredthSeconds <= 50) {
-      // play warn audio
+      playWarnAudio();
     }
     if (+time.minutes === 2 && +time.seconds <= 30 && +time.seconds > 0) {
       updateStatus('Second pour to XXXg');
     }
     if (+time.minutes <= 1 && +time.seconds <= 59) {
       updateStatus('Wait...');
-      // play wait audio
+      playWaitAudio();
     }
 
     if (+time.hundredthSeconds <= 0 && +time.seconds <= 0 && +time.minutes <= 0) {
       isRunning = false;
       // play complete audio
+      playCompletedAudio();
     }
   }
 
@@ -116,7 +183,7 @@ function BrewClock(props) {
     //console.log('time state: ', time);
 
     if (time.isRunning) {
-      setTimeout(decrementTimer, 100);
+      setTimeout(decrementTimer, 10);
     } else {
       clearTimeout();
     }
